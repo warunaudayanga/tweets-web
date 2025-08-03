@@ -1,0 +1,55 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        @if (authState.signedIn()) {
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary" [disabled]="loading()" (click)="signOut()">
+                    {{ loading() ? 'Signing out...' : 'Sign Out' }}
+                </button>
+            </div>
+        } @else {
+            <div class="col-md-4">
+                <h3 class="mb-4">Sign In</h3>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            class="form-control"
+                            formControlName="email"
+                            [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+                        />
+                        @if (form.get('email')?.errors?.['required']) {
+                            <div class="invalid-feedback">Email is required.</div>
+                        } @else if (form.get('email')?.errors?.['email']) {
+                            <div class="invalid-feedback">Enter a valid email.</div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            class="form-control"
+                            formControlName="password"
+                            [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+                        />
+                        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+                            <div class="invalid-feedback">Password is required.</div>
+                        }
+                    </div>
+
+                    @if (error()) {
+                        <div class="alert alert-danger">{{ error() }}</div>
+                    }
+
+                    <button type="submit" class="btn btn-primary w-100" [disabled]="loading()">
+                        {{ loading() ? 'Signing in...' : 'Sign In' }}
+                    </button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="vh-100 p-3">
+    <div class="tweet-feed-heading mb-3 d-flex justify-content-end align-items-center gap-2">
+        <button
+            class="btn btn-sm"
+            [class.btn-primary]="showAllTweets()"
+            [class.btn-outline-primary]="!showAllTweets()"
+            (click)="setShowAllTweets(true)"
+        >
+            All Tweets
+        </button>
+        <button
+            class="btn btn-sm"
+            [class.btn-primary]="!showAllTweets()"
+            [class.btn-outline-primary]="showAllTweets()"
+            (click)="setShowAllTweets(false)"
+        >
+            My Tweets
+        </button>
+    </div>
+
+    <div class="tweet-feed-wrapper overflow-auto pe-2">
+        @if (filteredTweets().length) {
+            <div class="tweet-feed">
+                @for (tweet of filteredTweets(); track tweet.id) {
+                    <div class="tweet-card">
+                        <div class="tweet-header">
+                            <strong>{{ tweet.author?.firstName }} {{ tweet.author?.lastName }}</strong>
+                            <span class="tweet-date">{{ tweet.createdAt | date: 'short' }}</span>
+                        </div>
+
+                        <p class="tweet-content">{{ tweet.content }}</p>
+
+                        <div class="tweet-actions d-flex justify-content-between align-items-center">
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary me-2" (click)="likeTweet(tweet.id)">
+                                    👍 {{ tweet.likes?.length || 0 }} Likes
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-secondary me-2" (click)="toggleReplies(tweet.id)">
+                                    💬 {{ tweet.replies?.length || 0 }} Replies
+                                </button>
+
+                                @if (tweet.author?.id === authState.userId()) {
+                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteTweet(tweet.id)">
+                                        🗑️ Delete
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        @if (isRepliesVisible(tweet.id)()) {
+                            <div class="tweet-replies mt-3">
+                                <div class="mb-3">
+                                    <textarea
+                                        rows="2"
+                                        class="form-control mb-2"
+                                        placeholder="Write a reply..."
+                                        [value]="replyInputs()[tweet.id] || ''"
+                                        (input)="updateReplyInput(tweet.id, $any($event.target).value)"
+                                    ></textarea>
+                                    <button class="btn btn-primary btn-sm" (click)="sendReply(tweet.id)">
+                                        Reply
+                                    </button>
+                                </div>
+
+                                @for (reply of tweet.replies || []; track reply.id) {
+                                    <div class="reply mb-2">
+                                        <strong>{{ reply.author?.firstName }} {{ reply.author?.lastName }}</strong>
+                                        <span class="reply-date">{{ reply.createdAt | date: 'short' }}</span>
+                                        <p>{{ reply.content }}</p>
+
+                                        @if (reply.author?.id === authState.userId()) {
+                                            <button
+                                                class="btn btn-sm btn-outline-danger"
+                                                (click)="deleteReply(tweet.id, reply.id)"
+                                            >
+                                                🗑️ Delete
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        } @else {
+            <p>No tweets to show.</p>
+        }
+    </div>
+</div>

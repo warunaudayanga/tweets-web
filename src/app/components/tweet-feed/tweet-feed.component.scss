@@ -1,0 +1,59 @@
+.tweet-feed-heading {
+    height: 40px;
+}
+
+.tweet-feed-wrapper {
+    height: calc(100% - 40px - 1.5rem);
+}
+
+.tweet-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tweet-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.tweet-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.tweet-content {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.tweet-actions {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.tweet-replies {
+    margin-top: 1rem;
+    border-top: 1px solid #ddd;
+    padding-top: 0.5rem;
+}
+
+.reply {
+    padding: 0.25rem 0;
+    font-size: 0.95rem;
+
+    strong {
+        margin-right: 0.5rem;
+    }
+
+    .reply-date {
+        font-size: 0.8rem;
+        color: #999;
+    }
+}
