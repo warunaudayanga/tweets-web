@@ -24,11 +24,6 @@ export class TweetFeedComponent implements OnInit {
 
     readonly showAllTweets = signal(true);
 
-    readonly filteredTweets = computed(() => {
-        const all = this.tweets();
-        return this.showAllTweets() ? all : all.filter(t => t.author?.id === this.authState.userId());
-    });
-
     constructor(private readonly tweetService: TweetService) {}
 
     ngOnInit(): void {

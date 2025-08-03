@@ -19,9 +19,9 @@
     </div>
 
     <div class="tweet-feed-wrapper overflow-auto pe-2">
-        @if (filteredTweets().length) {
+        @if (tweets().length) {
             <div class="tweet-feed">
-                @for (tweet of filteredTweets(); track tweet.id) {
+                @for (tweet of tweets(); track tweet.id) {
                     <div class="tweet-card">
                         <div class="tweet-header">
                             <strong>{{ tweet.author?.firstName }} {{ tweet.author?.lastName }}</strong>

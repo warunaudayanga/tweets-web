@@ -28,7 +28,7 @@ export class TweetService {
     }
 
     getMyTweets(): Observable<Tweet[]> {
-        return this.http.get<Tweet[]>(`${this.baseUrl}/user}`);
+        return this.http.get<Tweet[]>(`${this.baseUrl}/user`);
     }
 
     getUserTweets(authorId: EntityId): Observable<Tweet[]> {
