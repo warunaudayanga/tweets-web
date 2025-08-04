@@ -1,4 +1,4 @@
-export interface SignInDto {
+export interface LoginDto {
     email: string;
     password: string;
 }

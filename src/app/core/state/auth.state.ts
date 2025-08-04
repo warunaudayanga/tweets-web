@@ -20,10 +20,10 @@ import {
     User
 } from "../interfaces";
 import { AuthService } from "../services";
-import { SignInDto } from "../interfaces/dtos/sign-in.dto";
+import { LoginDto } from "../interfaces/dtos/login.dto";
 
 export interface AuthStateModel {
-    signedIn: boolean;
+    loggedIn: boolean;
     user: User | null;
     accessToken: AccessToken | null;
     refreshToken: RefreshToken | null;
@@ -32,7 +32,7 @@ export interface AuthStateModel {
 }
 
 const initialState: AuthStateModel = {
-    signedIn: false,
+    loggedIn: false,
     user: null,
     accessToken: null,
     refreshToken: null,
@@ -68,14 +68,14 @@ export const AuthState = signalStore(
                 refreshTokenExpiresOn,
             }));
         },
-        signIn: <AsPromise extends boolean = false>(
-            signInBody: SignInDto,
+        login: <AsPromise extends boolean = false>(
+            dto: LoginDto,
             redirect?: string | ((res: AuthResponse) => string),
             asPromise?: AsPromise,
         ): AsPromise extends true ? Promise<AuthResponse> : Observable<AuthResponse> => {
-            const sub = authService.signIn(signInBody).pipe(
+            const sub = authService.login(dto).pipe(
                 tap((res: AuthResponse): void => {
-                    patchState(state, { ...res, signedIn: true });
+                    patchState(state, { ...res, loggedIn: true });
                     if (redirect) {
                         void router.navigateByUrl(typeof redirect === "string" ? redirect : redirect(res));
                     }
@@ -88,11 +88,11 @@ export const AuthState = signalStore(
 
             return sub as AsPromise extends true ? Promise<AuthResponse> : Observable<AuthResponse>;
         },
-        signOut: <AsPromise extends boolean = false>(
+        logout: <AsPromise extends boolean = false>(
             redirect?: string,
             asPromise?: AsPromise,
         ): AsPromise extends true ? Promise<SuccessResponse | null> : Observable<SuccessResponse | null> => {
-            const sub = authService.signOut().pipe(
+            const sub = authService.logout().pipe(
                 tap({
                     next: (): void => {
                         patchState(state, initialState);

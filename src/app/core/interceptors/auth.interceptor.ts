@@ -84,7 +84,7 @@ export function authInterceptor(redirect: string, onRedirect?: () => void): Http
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 catchError((error: any) => {
                     if (error.status === 401 && !isRefreshTokenReq(req)) {
-                        if (authState.signedIn()) {
+                        if (authState.loggedIn()) {
                             return refreshToken(req, next);
                         }
                     }

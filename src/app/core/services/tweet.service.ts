@@ -36,7 +36,7 @@ export class TweetService {
     }
 
     update(id: EntityId, dto: UpdateTweetDto): Observable<Tweet> {
-        return this.http.patch<Tweet>(`${this.baseUrl}/${id}`, dto);
+        return this.http.put<Tweet>(`${this.baseUrl}/${id}`, dto);
     }
 
     delete(id: EntityId): Observable<SuccessResponse> {

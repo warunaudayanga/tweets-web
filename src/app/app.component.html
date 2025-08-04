@@ -1,8 +1,10 @@
 <div class="vh-100 d-flex justify-content-center">
     <div class="w-50 d-flex align-items-center">
-        <app-sign-in class="d-block w-100"></app-sign-in>
+        <app-login class="d-block w-100"></app-login>
     </div>
-    <div class="w-50">
-        <app-tweet-feed class="d-block "></app-tweet-feed>
-    </div>
+    @if (authState.loggedIn()) {
+        <div class="w-50">
+            <app-tweet-feed class="d-block "></app-tweet-feed>
+        </div>
+    }
 </div>
