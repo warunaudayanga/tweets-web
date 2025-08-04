@@ -60,7 +60,26 @@
                                 <span class="tweet-date">{{ tweet.createdAt | date: 'short' }}</span>
                             </div>
 
-                            <p class="tweet-content">{{ tweet.content }}</p>
+                            @if (editingTweetId() === tweet.id) {
+                                <textarea
+                                    class="form-control mb-2"
+                                    rows="3"
+                                    [(ngModel)]="editInputs()[tweet.id]"
+                                    (keydown.escape)="cancelEdit()"
+                                ></textarea>
+                                <div class="d-flex gap-2">
+                                    <button
+                                        class="btn btn-sm btn-success"
+                                        (click)="updateTweet(tweet.id)"
+                                        [disabled]="editInputs()[tweet.id].trim() === tweet.content || !editInputs()[tweet.id].trim()"
+                                    >
+                                        💾 Save
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">✖ Cancel</button>
+                                </div>
+                            } @else {
+                                <p class="tweet-content">{{ tweet.content }}</p>
+                            }
 
                             <div class="tweet-actions d-flex justify-content-between align-items-center">
                                 <div>
@@ -76,6 +95,14 @@
                                     </button>
 
                                     @if (tweet.author?.id === authState.userId()) {
+                                        @if (editingTweetId() !== tweet.id) {
+                                            <button
+                                                class="btn btn-sm btn-outline-secondary me-2"
+                                                (click)="startEdit(tweet.id, tweet.content)"
+                                            >
+                                                ✏️ Edit
+                                            </button>
+                                        }
                                         <button
                                             class="btn btn-sm btn-outline-danger"
                                             (click)="deleteTweet(tweet.id)"
@@ -96,14 +123,20 @@
                                             [value]="replyInputs()[tweet.id] || ''"
                                             (input)="updateReplyInput(tweet.id, $any($event.target).value)"
                                         ></textarea>
-                                        <button class="btn btn-primary btn-sm" (click)="sendReply(tweet.id)">
+                                        <button
+                                            class="btn btn-primary btn-sm"
+                                            (click)="sendReply(tweet.id)"
+                                            [disabled]="!replyInputs()[tweet.id].trim()"
+                                        >
                                             Reply
                                         </button>
                                     </div>
 
                                     @for (reply of tweet.replies || []; track reply.id) {
                                         <div class="reply mb-2">
-                                            <strong>{{ reply.author?.firstName }} {{ reply.author?.lastName }}</strong>
+                                            <strong>
+                                                {{ reply.author?.firstName }} {{ reply.author?.lastName }}
+                                            </strong>
                                             <span class="reply-date">{{ reply.createdAt | date: 'short' }}</span>
                                             <p>{{ reply.content }}</p>
 

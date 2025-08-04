@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable no-console,no-alert */
 import { CommonModule, DatePipe } from "@angular/common";
 import { Component, Signal, WritableSignal, computed, inject, signal, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -30,6 +30,10 @@ export class TweetFeedComponent implements OnInit {
 
     readonly tab: WritableSignal<Tab> = signal("all");
 
+    readonly editInputs: WritableSignal<Record<EntityId, string>> = signal({});
+
+    readonly editingTweetId: WritableSignal<EntityId | null> = signal(null);
+
     newTweetContent = "";
 
     ngOnInit(): void {
@@ -38,7 +42,6 @@ export class TweetFeedComponent implements OnInit {
 
     selectTab(tab: Tab): void {
         this.tab.set(tab);
-
         if (tab !== "create") {
             const source$ = tab === "all" ? this.tweetService.getAll() : this.tweetService.getMyTweets();
 
@@ -51,7 +54,11 @@ export class TweetFeedComponent implements OnInit {
 
     toggleReplies(id: EntityId): void {
         const current = new Set(this.visibleReplies());
-        current.has(id) ? current.delete(id) : current.add(id);
+        if (current.has(id)) {
+            current.delete(id);
+        } else {
+            current.add(id);
+        }
         this.visibleReplies.set(current);
     }
 
@@ -99,7 +106,6 @@ export class TweetFeedComponent implements OnInit {
 
     deleteTweet(id: EntityId): void {
         if (!window.confirm("Are you sure you want to delete this tweet?")) return;
-
         this.tweetService.delete(id).subscribe({
             next: () => {
                 this.tweets.set(this.tweets().filter(tweet => tweet.id !== id));
@@ -110,7 +116,6 @@ export class TweetFeedComponent implements OnInit {
 
     deleteReply(tweetId: EntityId, replyId: EntityId): void {
         if (!window.confirm("Are you sure you want to delete this reply?")) return;
-
         this.tweetService.deleteReply(tweetId, replyId).subscribe({
             next: () => {
                 const updatedTweets = this.tweets().map(tweet => {
@@ -129,12 +134,37 @@ export class TweetFeedComponent implements OnInit {
         if (!content) return;
 
         const dto: CreateTweetDto = { content };
-
         this.tweetService.create(dto).subscribe({
             next: tweet => {
                 this.tweets.set([tweet, ...this.tweets()]);
                 this.newTweetContent = "";
-                this.selectTab("all"); // Optionally auto-switch to All Tweets
+                this.selectTab("all"); // optional: switch to All Tweets
+            },
+            error: err => console.error(err),
+        });
+    }
+
+    startEdit(id: EntityId, content: string): void {
+        this.editingTweetId.set(id);
+        this.editInputs.set({ ...this.editInputs(), [id]: content });
+    }
+
+    cancelEdit(): void {
+        this.editingTweetId.set(null);
+    }
+
+    updateTweet(id: EntityId): void {
+        const newContent = this.editInputs()[id]?.trim();
+        if (!newContent) return;
+
+        this.tweetService.update(id, { content: newContent }).subscribe({
+            next: updated => {
+                const updatedTweets = this.tweets().map(tweet =>
+                    tweet.id === id ? { ...tweet, content: updated.content, updatedAt: updated.updatedAt } : tweet,
+                );
+                this.tweets.set(updatedTweets);
+                this.editInputs.set({ ...this.editInputs(), [id]: "" });
+                this.editingTweetId.set(null);
             },
             error: err => console.error(err),
         });
