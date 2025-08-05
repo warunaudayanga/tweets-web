@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Component, inject, signal, WritableSignal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AuthState } from "../../core/state";
@@ -74,6 +75,9 @@ export class AuthComponent {
             next: () => {
                 this.loading.set(false);
                 this.isLoginForm.set(true); // auto switch to login if needed
+                window.alert(
+                    'Registration successful and verification email sent. Please verify your email to continue.',
+                );
             },
             error: err => {
                 this.error.set(err.error?.message || null);

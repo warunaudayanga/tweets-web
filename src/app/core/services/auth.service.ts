@@ -38,6 +38,10 @@ export class AuthService {
             .pipe(take(1));
     }
 
+    verifyEmail(token: string): Observable<boolean> {
+        return this.http.post<boolean>(`${Endpoint.AUTH}/${AuthEndpoint.EMAIL_VERIFY}`, { token });
+    }
+
     logout(): Observable<SuccessResponse | null> {
         return this.http.post<SuccessResponse>(`${Endpoint.AUTH}/${AuthEndpoint.LOGOUT}`, {}).pipe(take(1));
     }
