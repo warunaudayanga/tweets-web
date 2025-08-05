@@ -26,11 +26,11 @@ export class TweetFeedComponent implements OnInit {
 
     readonly visibleReplies: WritableSignal<Set<EntityId>> = signal(new Set());
 
-    readonly replyInputs: WritableSignal<Record<EntityId, string>> = signal({});
+    readonly replyInputs: WritableSignal<Record<EntityId, string | undefined>> = signal({});
 
     readonly tab: WritableSignal<Tab> = signal("all");
 
-    readonly editInputs: WritableSignal<Record<EntityId, string>> = signal({});
+    readonly editInputs: WritableSignal<Record<EntityId, string | undefined>> = signal({});
 
     readonly editingTweetId: WritableSignal<EntityId | null> = signal(null);
 
@@ -130,7 +130,7 @@ export class TweetFeedComponent implements OnInit {
     }
 
     createTweet(): void {
-        const content = this.newTweetContent.trim();
+        const content = this.newTweetContent?.trim();
         if (!content) return;
 
         const dto: CreateTweetDto = { content };

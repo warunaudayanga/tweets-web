@@ -71,7 +71,7 @@
                                     <button
                                         class="btn btn-sm btn-success"
                                         (click)="updateTweet(tweet.id)"
-                                        [disabled]="editInputs()[tweet.id].trim() === tweet.content || !editInputs()[tweet.id].trim()"
+                                        [disabled]="editInputs()[tweet.id]?.trim() === tweet.content || !editInputs()[tweet.id]?.trim()"
                                     >
                                         💾 Save
                                     </button>
@@ -126,7 +126,7 @@
                                         <button
                                             class="btn btn-primary btn-sm"
                                             (click)="sendReply(tweet.id)"
-                                            [disabled]="!replyInputs()[tweet.id].trim()"
+                                            [disabled]="!replyInputs()[tweet.id]?.trim()"
                                         >
                                             Reply
                                         </button>
