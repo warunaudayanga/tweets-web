@@ -16,7 +16,7 @@ export class AppComponent {
     ) {
         router.events.subscribe(e => {
             if (e instanceof NavigationEnd) {
-                const rgxArr = /\/auth\/verify-email\/(\w+@\w+\.\w+)\/(\w+)/.exec(e.url);
+                const rgxArr = /\/auth\/verify-email\/([\w.]+@[\w.]+\.\w+)\/(\w+)/.exec(e.url);
                 if (rgxArr) {
                     const [, , token] = rgxArr;
                     authService.verifyEmail(token).subscribe({
